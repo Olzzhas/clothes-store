@@ -1,11 +1,19 @@
+import { NavLink } from 'react-router-dom';
+
 function Navbar() {
    return (
       <div className="w-[1400px] h-[80px] m-auto flex items-center border-b">
          <div className="flex space-x-4 text-[#363E61] w-[400px] justify-between">
-            <span className="font-circular text-[18px]">Men</span>
-            <span className="font-circular text-[18px]">Women</span>
-            <span className="font-circular text-[18px]">Kids</span>
-            <span className="font-circular text-[18px]">Trending</span>
+            <NavLink
+               to="/"
+               className="font-circular text-[18px] font-[900] hover:text-blue-500"
+               activeClassName="text-blue-500"
+            >
+               P-CLOTH
+            </NavLink>
+            <span className="font-circular text-[18px]">News</span>
+            <span className="font-circular text-[18px]">Payments</span>
+            <span className="font-circular text-[18px]">Support</span>
          </div>
          <div className="flex ml-auto space-x-4 items-center w-[200px] justify-between">
             <img

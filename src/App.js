@@ -1,13 +1,15 @@
-import Items from './components/items/Items';
-import Navbar from './components/navbar/Navbar';
-import Promo from './components/promo/Promo';
+import { Routes, Route } from 'react-router-dom';
+
+import Home from './pages/Home';
+import Product from './pages/Product';
 
 function App() {
    return (
       <>
-         <Navbar />
-         {/* <Promo /> */}
-         <Items />
+         <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/product" element={<Product />} />
+         </Routes>
       </>
    );
 }
