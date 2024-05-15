@@ -1,5 +1,6 @@
 import Item from '../item/Item';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axiosInstance from '../../interceptor';
 
 function Items() {
    const items = [
@@ -86,7 +87,7 @@ function Items() {
       },
    ];
 
-   const categories = [
+   const categories_mock = [
       'Мужские Кроссовки',
       'Верхняя одежда',
       'Головной убор',
@@ -94,15 +95,45 @@ function Items() {
       'Рубашки',
    ];
 
+   // Получение данных из сервера
+
+   const [products, setProducts] = useState([]);
+   const [categories, setCategories] = useState([]);
+
+   useEffect(() => {
+      const fetchData = async () => {
+         try {
+            // поменяй на верный эндпоинт (localhost:8080 писать здесь не надо, пиши сразу то что пишешь после порта)
+            const response = await axiosInstance.get('/api/v1/products'); // <------ HERE
+            setProducts(response.data);
+
+            const uniqueCategories = Array.from(
+               new Set(response.data.map((product) => product.category.name)),
+            );
+            setCategories(uniqueCategories);
+         } catch (error) {
+            alert('Error while fetching data, check console!');
+            console.log(error);
+         }
+      };
+
+      fetchData();
+   }, []);
+
    const [selectedCategory, setSelectedCategory] =
       useState('Мужские Кроссовки');
 
+   // Replace items with products
    const filteredItems = items.filter((item) =>
       item.category.includes(selectedCategory),
    );
 
+   const containerStyle = {
+      minHeight: `calc(100vh - 16.25rem)`,
+   };
+
    return (
-      <div className="w-[1400px] m-auto mt-4">
+      <div className="w-[1400px] m-auto mt-4" style={containerStyle}>
          <div className="flex items-center justify-between">
             <h1 className="text-[32px] font-inter font-bold">
                {/* Selected Category */}
@@ -111,7 +142,8 @@ function Items() {
 
             {/* Map other categories */}
             <div className="flex font-inter font-[400] text-[16px] w-[650px] justify-between text-[#969292]">
-               {categories.map((category) => (
+               {/* REPLACE categories_mock with categories*/}
+               {categories_mock.map((category) => (
                   <span
                      key={category}
                      className={`cursor-pointer hover:opacity-45 transition-all duration-200 ease-in-out ${
@@ -126,10 +158,11 @@ function Items() {
                ))}
             </div>
          </div>
-         <div className="h-fit mt-6 flex flex-wrap justift-between">
+         <div className="h-fit mt-6 flex flex-wrap">
             {filteredItems.map((item, index) => {
                return (
                   <Item
+                     // replace item.title with item.name or change name to title in java
                      title={item.title}
                      price={item.price}
                      img_url={item.img_url}

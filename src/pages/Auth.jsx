@@ -1,11 +1,19 @@
+import { useState } from 'react';
 import Login from '../components/auth/Login';
+import Register from '../components/auth/Register';
 
 function Auth() {
+   const [isLogin, setIsLogin] = useState(true);
+
    return (
       <>
-         <Login />
+         {isLogin ? (
+            <Login setIsLogin={setIsLogin} />
+         ) : (
+            <Register setIsLogin={setIsLogin} />
+         )}
       </>
    );
 }
 
-export default Login;
+export default Auth;

@@ -1,6 +1,8 @@
 import { NavLink } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 function Navbar() {
+   const { logout } = useAuth();
    return (
       <div className="w-[1400px] h-[80px] m-auto flex items-center border-b">
          <div className="flex space-x-4 text-[#363E61] w-[400px] justify-between">
@@ -22,12 +24,18 @@ function Navbar() {
                alt="search icon"
             />
             <img
+               onClick={() => {
+                  console.log(localStorage.getItem('accessToken'));
+               }}
                className="w-[20px] h-[20px]"
                src="/svg/cart.svg"
                alt="cart icon"
             />
 
             <img
+               onClick={() => {
+                  logout();
+               }}
                src="https://avatar.iran.liara.run/public/38"
                className="w-[40px] h-[40px] rounded-full"
                alt="avatar"

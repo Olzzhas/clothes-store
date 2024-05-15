@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-function Login() {
+function Login({ setIsLogin }) {
    const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
    const { login } = useAuth();
+   const navigate = useNavigate();
 
    const handleSubmit = async (e) => {
       e.preventDefault();
       try {
-         await login({ email, password });
-         // Обработка успешного входа (перенаправление и т.д.)
+         await login({ email, password }).then(() => {
+            navigate('/home');
+         });
       } catch (error) {
-         // Обработка ошибки входа
+         console.log(error);
       }
    };
 
@@ -62,6 +65,14 @@ function Login() {
                   </button>
                </div>
             </form>
+            <span
+               className="cursor-pointer text-[#5d5c5c]"
+               onClick={() => {
+                  setIsLogin(false);
+               }}
+            >
+               Register
+            </span>
          </div>
       </div>
    );

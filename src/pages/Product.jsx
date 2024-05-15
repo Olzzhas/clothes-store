@@ -1,7 +1,19 @@
 import Footer from '../components/footer/Footer';
 import Navbar from '../components/navbar/Navbar';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 function Product() {
+   const navigate = useNavigate();
+   const { accessToken } = useAuth();
+
+   useEffect(() => {
+      console.log('accessToken:', accessToken);
+      if (accessToken == null) {
+         navigate('/auth');
+      }
+   }, [accessToken, navigate]);
    return (
       <>
          <Navbar />
