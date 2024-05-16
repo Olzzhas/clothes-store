@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 function Register({ setIsLogin }) {
    const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
-   const [name, setName] = useState('');
-   const [lastnamename, setLastname] = useState('');
+   const [firstname, setFirstname] = useState('');
+   const [lastname, setLastname] = useState('');
    const { register } = useAuth();
    const navigate = useNavigate();
 
@@ -15,7 +15,7 @@ function Register({ setIsLogin }) {
       try {
          // (*читать это после того как прочитал остальные комменты ниже) Если добавил какое то новое поле, то добавь его еще и в параметр функции register,
          // затем перейди в файл AuthContext и там тоже написал что нужно изменить
-         await register({ email, password, name, lastnamename }).then(() => {
+         await register({ email, password, firstname, lastname }).then(() => {
             navigate('/home');
          });
       } catch (error) {
@@ -77,8 +77,8 @@ function Register({ setIsLogin }) {
                      id="name"
                      type="name"
                      placeholder="Имя"
-                     value={email}
-                     onChange={(e) => setName(e.target.value)}
+                     value={firstname}
+                     onChange={(e) => setFirstname(e.target.value)}
                   />
                </div>
 
@@ -95,7 +95,7 @@ function Register({ setIsLogin }) {
                      id="lastname"
                      type="lastname"
                      placeholder="Фамилия"
-                     value={email}
+                     value={lastname}
                      onChange={(e) => setLastname(e.target.value)}
                   />
                </div>

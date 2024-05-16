@@ -1,9 +1,25 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../interceptor';
 
-function Item({ title, price, img_url }) {
+function Item({ title, price, img_url, isInCart }) {
    const navigate = useNavigate();
-   const [isFav, setIsFav] = useState(false);
+   const [isFav, setIsFav] = useState(isInCart);
+
+   const addToCart = async () => {
+      if (!isFav) {
+         await axiosInstance.post('add-to-cart', {
+            product_id: 5,
+            user_id: 16,
+         });
+      } else {
+         await axiosInstance.delete('delete-from-cart', {
+            product_id: 5,
+            user_id: 16,
+         });
+      }
+   };
+
    return (
       <div className="w-[240px] h-[280px] border rounded-xl flex mx-[20px] mb-[30px] shadow-sm cursor-pointer hover:shadow-lg transition-shadow duration-200 ease-in-out">
          <div className="w-[80%] h-3/4 mx-auto">
@@ -36,6 +52,8 @@ function Item({ title, price, img_url }) {
                      }
                      onClick={() => {
                         setIsFav(!isFav);
+
+                        addToCart();
                      }}
                   />
                </div>

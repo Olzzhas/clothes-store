@@ -7,11 +7,12 @@ import { useAuth } from '../context/AuthContext';
 
 function Home() {
    const navigate = useNavigate();
-   const { accessToken } = useAuth();
+   const { accessToken, user } = useAuth();
 
    useEffect(() => {
-      console.log('accessToken:', accessToken);
-      if (accessToken == null) {
+      console.log(user);
+
+      if (localStorage.getItem('accessToken') == null) {
          navigate('/auth');
       }
    }, [accessToken, navigate]);

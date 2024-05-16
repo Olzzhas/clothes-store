@@ -8,6 +8,8 @@ function Login({ setIsLogin }) {
    const { login } = useAuth();
    const navigate = useNavigate();
 
+   console.log(localStorage.getItem('accessToken'));
+
    const handleSubmit = async (e) => {
       e.preventDefault();
       try {

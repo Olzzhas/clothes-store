@@ -1,6 +1,7 @@
 import Item from '../item/Item';
 import { useState, useEffect } from 'react';
 import axiosInstance from '../../interceptor';
+import ProductsNotFound from '../ProductsNotFound';
 
 function Items() {
    const items = [
@@ -87,6 +88,25 @@ function Items() {
       },
    ];
 
+   const cartItems = [
+      {
+         id: 1,
+         title: 'Мужские Кроссовки Nike Lebron XVIII Low',
+         price: 219,
+         size: 'M',
+         img_url: '/img/lebron.jpg',
+         category: 'Мужские Кроссовки',
+      },
+      {
+         id: 2,
+         title: 'Мужские Кроссовки Nike Kyrie Flytrap IV',
+         price: 189,
+         size: 'XL',
+         img_url: '/img/kyrie-flytrap.jpg',
+         category: 'Мужские Кроссовки',
+      },
+   ];
+
    const categories_mock = [
       'Мужские Кроссовки',
       'Верхняя одежда',
@@ -98,7 +118,9 @@ function Items() {
    // Получение данных из сервера
 
    const [products, setProducts] = useState([]);
+   const [cartProducts, setCartProducts] = useState([]);
    const [categories, setCategories] = useState([]);
+   const [searchQuery, setSearchQuery] = useState('');
 
    useEffect(() => {
       const fetchData = async () => {
@@ -111,8 +133,11 @@ function Items() {
                new Set(response.data.map((product) => product.category.name)),
             );
             setCategories(uniqueCategories);
+
+            const cartResponse = await axiosInstance.get('get-cart-items/id');
+            setCartProducts(cartResponse.data);
          } catch (error) {
-            alert('Error while fetching data, check console!');
+            // alert('Error while fetching data, check console!');
             console.log(error);
          }
       };
@@ -124,12 +149,16 @@ function Items() {
       useState('Мужские Кроссовки');
 
    // Replace items with products
-   const filteredItems = items.filter((item) =>
-      item.category.includes(selectedCategory),
-   );
+   const filteredItems = items.filter((item) => {
+      const matchesCategory = item.category.includes(selectedCategory);
+      const matchesSearch = item.title
+         .toLowerCase()
+         .includes(searchQuery.toLowerCase());
+      return matchesCategory && matchesSearch;
+   });
 
    const containerStyle = {
-      minHeight: `calc(100vh - 16.25rem)`,
+      minHeight: `calc(100vh - 16rem)`,
    };
 
    return (
@@ -158,18 +187,46 @@ function Items() {
                ))}
             </div>
          </div>
+         {/* START FILTER */}
+         <div>
+            <div className="mt-4" style={{ position: 'relative' }}>
+               <input
+                  type="text"
+                  placeholder="Поиск по названию"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 pr-4 py-2 border rounded-md w-full"
+               />
+               <img
+                  src="/svg/search.svg"
+                  alt="search icon"
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5"
+               />
+            </div>
+         </div>
+         {/* END FILTER */}
          <div className="h-fit mt-6 flex flex-wrap">
-            {filteredItems.map((item, index) => {
-               return (
-                  <Item
-                     // replace item.title with item.name or change name to title in java
-                     title={item.title}
-                     price={item.price}
-                     img_url={item.img_url}
-                     key={index}
-                  />
-               );
-            })}
+            {filteredItems.length < 1 ? (
+               <div
+                  className="absolute top-0 left-0 w-full"
+                  style={{ zIndex: -100 }}
+               >
+                  <ProductsNotFound />
+               </div>
+            ) : (
+               filteredItems.map((item, index) => {
+                  return (
+                     <Item
+                        // replace item.title with item.name or change name to title in java
+                        title={item.title}
+                        price={item.price}
+                        img_url={item.img_url}
+                        key={index}
+                        isInCart={cartItems.includes(item)}
+                     />
+                  );
+               })
+            )}
          </div>
       </div>
    );

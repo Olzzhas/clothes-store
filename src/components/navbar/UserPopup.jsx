@@ -1,13 +1,23 @@
 import React, { useState } from 'react';
+import axiosInstance from '../../interceptor';
 
 const UserPopup = ({ user, closePopup, logout }) => {
-   const [firstName, setFirstName] = useState(user.firstName);
-   const [lastName, setLastName] = useState(user.lastName);
+   const [firstName, setFirstName] = useState(user.firstname);
+   const [lastName, setLastName] = useState(user.lastname);
    const [email, setEmail] = useState(user.email);
+   const [password, setPassword] = useState('');
 
-   const handleSave = () => {
+   const handleSave = async () => {
       // Логика для сохранения изменений данных пользователя
       console.log('User data saved:', { firstName, lastName, email });
+
+      await axiosInstance.post('/user-update', {
+         email,
+         firstName,
+         lastName,
+         password,
+      });
+
       closePopup();
    };
 
@@ -44,6 +54,15 @@ const UserPopup = ({ user, closePopup, logout }) => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-3 py-2 border rounded mt-1"
+               />
+            </label>
+            <label className="block mb-4">
+               Password:
+               <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-3 py-2 border rounded mt-1"
                />
             </label>

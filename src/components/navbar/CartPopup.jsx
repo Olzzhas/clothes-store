@@ -1,4 +1,5 @@
 import React from 'react';
+import axiosInstance from '../../interceptor';
 
 const CartPopup = ({ cartItems, closePopup }) => {
    const handleRemoveItem = (id) => {
@@ -67,7 +68,7 @@ const CartPopup = ({ cartItems, closePopup }) => {
                   </div>
                   <button
                      onClick={handleCheckout}
-                     className="w-full px-4 py-2 bg-blue-500 text-white rounded mt-4"
+                     className="w-full px-4 py-2 bg-green-500 hover:bg-green-700 transition-all 0.2s text-white rounded mt-4"
                   >
                      Proceed to Checkout
                   </button>

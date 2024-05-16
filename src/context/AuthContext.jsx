@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext({
+   accessToken: null,
    user: null,
    login: () => {},
    logout: () => {},
@@ -9,12 +10,10 @@ const AuthContext = createContext({
 
 export const AuthProvider = ({ children }) => {
    const [accessToken, setAccessToken] = useState(null);
+   const [user, setUser] = useState(null);
 
    const login = async ({ email, password }) => {
       try {
-         console.log(email);
-         console.log(password);
-
          const response = await axios.post(
             // здесь тоже поменять
             'http://localhost:8080/api/v1/auth/authenticate',
@@ -27,36 +26,58 @@ export const AuthProvider = ({ children }) => {
             },
          );
 
-         console.log(response.data.token);
-
          setAccessToken(response.data.token);
+         setUser(response.data);
          localStorage.setItem('accessToken', response.data.token);
+         localStorage.setItem('user', JSON.stringify(response.data));
       } catch (error) {
          console.log(error);
       }
    };
 
    // (* читать этот коммент после того как прочитал комменты в файле src/components/auth/Register.jsx) новые поля добавить сюда
-   const register = async ({ email, password, name, lastname }) => {
-      const response = await axios.post('http://localhost:8080/api/v1/auth', {
-         email,
-         password,
-         name,
-         lastname,
-         // и сюда
-      });
+   const register = async ({ email, password, firstname, lastname }) => {
+      try {
+         const response = await axios.post(
+            // здесь тоже поменять
+            'http://localhost:8080/api/v1/auth/register',
+            {
+               email,
+               password,
+               firstname,
+               lastname,
+            },
+            {
+               ContentType: 'application/json',
+            },
+         );
 
-      setAccessToken(response.data.token);
-      localStorage.setItem('accessToken', JSON.stringify(accessToken));
+         setAccessToken(response.data.token);
+         setUser(response.data);
+         localStorage.setItem('accessToken', response.data.token);
+         localStorage.setItem('user', JSON.stringify(response.data));
+      } catch (error) {
+         console.log(error);
+      }
    };
 
    const logout = () => {
       setAccessToken(null);
+      setUser(null);
       localStorage.removeItem('accessToken');
+      localStorage.removeItem('user');
    };
 
    return (
-      <AuthContext.Provider value={{ accessToken, login, register, logout }}>
+      <AuthContext.Provider
+         value={{
+            accessToken: accessToken,
+            user: user,
+            login,
+            register,
+            logout,
+         }}
+      >
          {children}
       </AuthContext.Provider>
    );

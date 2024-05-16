@@ -1,21 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import UserPopup from './UserPopup';
 import CartPopup from './CartPopup';
+import axiosInstance from '../../interceptor';
 
 function Navbar() {
    const { logout } = useAuth();
 
+   const [cartProducts, setCartProducts] = useState([]);
+   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
+
+   useEffect(() => {
+      const fetchData = async () => {
+         try {
+            const response = await axiosInstance.post('/get-from-cart/id');
+            setCartProducts(response.data);
+         } catch (error) {
+            console.log(error);
+         }
+      };
+
+      fetchData();
+   }, []);
+
    const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
    const [isCartPopupOpen, setIsCartPopupOpen] = useState(false);
-
-   const user = {
-      avatar: 'https://avatar.iran.liara.run/public/38',
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'john.doe@example.com',
-   };
 
    const cartItems = [
       {
@@ -133,21 +143,27 @@ function Navbar() {
                alt="cart icon"
             />
             <img
-               src={user.avatar}
+               src={
+                  'https://gravatar.com/avatar/27205e5c51cb03f862138b22bcb5dc20f94a342e744ff6df1b8dc8af3c865109'
+               }
                className="w-[40px] h-[40px] rounded-full cursor-pointer"
                alt="avatar"
                onClick={toggleUserPopup}
             />
          </div>
          {isUserPopupOpen && (
-            <UserPopup
-               user={user}
-               closePopup={toggleUserPopup}
-               logout={logout}
-            />
+            <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 flex justify-center items-center">
+               <UserPopup
+                  user={user}
+                  closePopup={toggleUserPopup}
+                  logout={logout}
+               />
+            </div>
          )}
          {isCartPopupOpen && (
-            <CartPopup cartItems={cartItems} closePopup={toggleCartPopup} />
+            <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 flex justify-center items-center">
+               <CartPopup cartItems={cartItems} closePopup={toggleCartPopup} />
+            </div>
          )}
       </div>
    );
