@@ -44,8 +44,8 @@ export const AuthProvider = ({ children }) => {
             {
                email,
                password,
-               firstname,
-               lastname,
+               first_name: firstname,
+               last_name: lastname,
             },
             {
                ContentType: 'application/json',

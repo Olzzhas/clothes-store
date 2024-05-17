@@ -1,7 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../interceptor';
 
-const CartPopup = ({ cartItems, closePopup }) => {
+const CartPopup = ({ closePopup }) => {
+   const user = JSON.parse(localStorage.getItem('user'));
+   const [cartItems, setCartItems] = useState([]);
+
+   useEffect(() => {
+      const fetchData = async () => {
+         try {
+            const response = await axiosInstance.get(
+               `/api/cart/user/${user.userId}`,
+            );
+
+            setCartItems(response.data);
+         } catch (error) {
+            console.log(error);
+         }
+      };
+
+      fetchData();
+   }, []);
+
    const handleRemoveItem = (id) => {
       // Логика для удаления предмета из корзины
       console.log('Item removed:', id);

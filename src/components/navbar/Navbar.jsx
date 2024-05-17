@@ -8,97 +8,10 @@ import axiosInstance from '../../interceptor';
 function Navbar() {
    const { logout } = useAuth();
 
-   const [cartProducts, setCartProducts] = useState([]);
    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
-
-   useEffect(() => {
-      const fetchData = async () => {
-         try {
-            const response = await axiosInstance.post('/get-from-cart/id');
-            setCartProducts(response.data);
-         } catch (error) {
-            console.log(error);
-         }
-      };
-
-      fetchData();
-   }, []);
 
    const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
    const [isCartPopupOpen, setIsCartPopupOpen] = useState(false);
-
-   const cartItems = [
-      {
-         id: 1,
-         name: 'Мужские Кроссовки Nike Lebron XVIII Low',
-         price: 20,
-         quantity: 2,
-         image: '/img/jordan11.jpg',
-      },
-      {
-         id: 2,
-         name: 'Jeans',
-         price: 40,
-         quantity: 1,
-         image: '/img/lebron.jpg',
-      },
-      {
-         id: 1,
-         name: 'T-shirt',
-         price: 20,
-         quantity: 2,
-         image: '/img/jordan11.jpg',
-      },
-      {
-         id: 2,
-         name: 'Jeans',
-         price: 40,
-         quantity: 1,
-         image: '/img/lebron.jpg',
-      },
-      {
-         id: 1,
-         name: 'T-shirt',
-         price: 20,
-         quantity: 2,
-         image: '/img/jordan11.jpg',
-      },
-      {
-         id: 2,
-         name: 'Jeans',
-         price: 40,
-         quantity: 1,
-         image: '/img/lebron.jpg',
-      },
-      {
-         id: 1,
-         name: 'T-shirt',
-         price: 20,
-         quantity: 2,
-         image: '/img/jordan11.jpg',
-      },
-      {
-         id: 2,
-         name: 'Jeans',
-         price: 40,
-         quantity: 1,
-         image: '/img/lebron.jpg',
-      },
-      {
-         id: 1,
-         name: 'T-shirt',
-         price: 20,
-         quantity: 2,
-         image: '/img/jordan11.jpg',
-      },
-      {
-         id: 2,
-         name: 'Jeans',
-         price: 40,
-         quantity: 1,
-         image: '/img/lebron.jpg',
-      },
-   ];
 
    // Функция для переключения видимости поп-апа пользователя
    const toggleUserPopup = () => {
@@ -162,7 +75,7 @@ function Navbar() {
          )}
          {isCartPopupOpen && (
             <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 flex justify-center items-center">
-               <CartPopup cartItems={cartItems} closePopup={toggleCartPopup} />
+               <CartPopup closePopup={toggleCartPopup} />
             </div>
          )}
       </div>
