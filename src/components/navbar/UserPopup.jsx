@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import axiosInstance from '../../interceptor';
 
 const UserPopup = ({ user, closePopup, logout }) => {
-   const [firstName, setFirstName] = useState(user.firstName);
-   const [lastName, setLastName] = useState(user.lastName);
+   const [firstName, setFirstName] = useState(user.first_name);
+   const [lastName, setLastName] = useState(user.last_name);
    const [email, setEmail] = useState(user.email);
+   const [userId, setUserId] = useState(user.userId)
    const [password, setPassword] = useState('');
 
    const handleSave = async () => {

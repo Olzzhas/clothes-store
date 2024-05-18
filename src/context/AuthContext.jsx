@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
       try {
          const response = await axios.post(
             // здесь тоже поменять
-            'http://localhost:8080/api/v1/auth/authenticate',
+            'http://localhost:8080/api/v1/auth/login',
             {
                email,
                password,

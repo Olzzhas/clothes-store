@@ -8,11 +8,8 @@ const CartPopup = ({ closePopup }) => {
    useEffect(() => {
       const fetchData = async () => {
          try {
-            const response = await axiosInstance.get(
-               `/api/cart/user/${user.userId}`,
-            );
-
-            setCartItems(response.data);
+            const cartResponse = await axiosInstance.get(`/api/cart/user/${user.userId}`);
+            setCartItems(cartResponse.data);
          } catch (error) {
             console.log(error);
          }
@@ -21,16 +18,23 @@ const CartPopup = ({ closePopup }) => {
       fetchData();
    }, []);
 
-   const handleRemoveItem = (id) => {
-      // Логика для удаления предмета из корзины
-      console.log('Item removed:', id);
+   const handleRemoveItem = async(id) => {
+      await axiosInstance.delete(`/api/cart/${user.userId}/product/${id}`)
    };
 
-   const handleCheckout = () => {
-      // Логика для оформления заказа
-      console.log('Proceeding to checkout');
-      closePopup();
-   };
+   const handleCheckout = async () => {
+      const purchaseList = cartItems.map(item => ({
+        product: { id: item.product.id },
+        userId: user.userId
+      }));
+    
+      try {
+        const response = await axiosInstance.post('/api/purchases/list', purchaseList);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
    const truncateText = (text, maxLength) => {
       if (text.length > maxLength) {
@@ -48,26 +52,26 @@ const CartPopup = ({ closePopup }) => {
                   <div style={cartItemsContainerStyles} className="space-y-4">
                      {cartItems.map((item) => (
                         <div
-                           key={item.id}
+                           key={item.product.id}
                            className="flex justify-between items-center border-b pb-2"
                         >
                            <div className="w-16 h-16 flex-shrink-0">
                               <img
-                                 src={item.image}
-                                 alt={item.name}
+                                 src={item.product.image}
+                                 alt={item.product.name}
                                  className="w-full h-full object-cover rounded"
                               />
                            </div>
                            <div className="flex-row ml-4 items-center">
                               <span className="font-bold">
-                                 {truncateText(item.name, 20)}
+                                 {truncateText(item.product.name, 20)}
                               </span>
                               <span className="text-gray-500 ml-2">
                                  ${item.price}
                               </span>
                            </div>
                            <button
-                              onClick={() => handleRemoveItem(item.id)}
+                              onClick={() => handleRemoveItem(item.product.id)}
                               className="text-red-500 hover:text-red-700"
                            >
                               Remove
@@ -80,7 +84,7 @@ const CartPopup = ({ closePopup }) => {
                      <span className="font-bold">
                         $
                         {cartItems.reduce(
-                           (total, item) => total + item.price * item.quantity,
+                           (total, item) => total + item.product.price,
                            0,
                         )}
                      </span>

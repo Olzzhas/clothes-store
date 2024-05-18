@@ -4,118 +4,7 @@ import axiosInstance from '../../interceptor';
 import ProductsNotFound from '../ProductsNotFound';
 
 function Items() {
-   const items = [
-      {
-         id: 1,
-         title: 'Мужские Кроссовки Nike Lebron XVIII Low',
-         price: 219,
-         size: 'M',
-         img_url: '/img/lebron.jpg',
-         category: 'Мужские Кроссовки',
-      },
-      {
-         id: 2,
-         title: 'Мужские Кроссовки Nike Kyrie Flytrap IV',
-         price: 189,
-         size: 'XL',
-         img_url: '/img/kyrie-flytrap.jpg',
-         category: 'Мужские Кроссовки',
-      },
-      {
-         id: 3,
-         title: 'Мужские Кроссовки Jordan Air 11',
-         price: 199,
-         size: 'S',
-         img_url: '/img/jordan11.jpg',
-         category: 'Мужские Кроссовки',
-      },
-
-      {
-         id: 4,
-         title: 'Мужские Кроссовки Nike LeBron XVIII',
-         price: 179,
-         size: 'L',
-         img_url: '/img/lebron-xviii.jpg',
-         category: 'Мужские Кроссовки',
-      },
-      {
-         id: 5,
-         title: 'Мужские Кроссовки Nike Blazer Mid Suede',
-         price: 149,
-         size: 'XXL',
-         img_url: '/img/nike-blazer-mid.jpg',
-         category: 'Мужские Кроссовки',
-      },
-      {
-         id: 6,
-         title: 'Кроссовки Puma X Aka Boku Future Rider',
-         price: 189,
-         size: 'XS',
-         img_url: '/img/puma.png',
-         category: 'Мужские Кроссовки',
-      },
-      {
-         id: 7,
-         title: 'Мужские Кроссовки Nike Kyrie VII',
-         price: 199,
-         size: 'L',
-         img_url: '/img/kyrie7.jpg',
-         category: 'Мужские Кроссовки',
-      },
-      {
-         id: 8,
-         title: 'Белая Кепка Nike',
-         price: 39,
-         size: 'L',
-         img_url: '/img/nike-white-cap.png',
-         category: 'Головной убор',
-      },
-      {
-         id: 9,
-         title: 'Коричневая Кепка Lacoste',
-         price: 49,
-         size: 'L',
-         img_url: '/img/lacoste-cap.png',
-         category: 'Головной убор',
-      },
-      {
-         id: 10,
-         title: 'Желтая Куртка The North Face',
-         price: 49,
-         size: 'L',
-         img_url: '/img/tnf-jacket-yellow.png',
-         category: 'Верхняя одежда',
-      },
-   ];
-
-   const cartItems = [
-      {
-         id: 1,
-         title: 'Мужские Кроссовки Nike Lebron XVIII Low',
-         price: 219,
-         size: 'M',
-         img_url: '/img/lebron.jpg',
-         category: 'Мужские Кроссовки',
-      },
-      {
-         id: 2,
-         title: 'Мужские Кроссовки Nike Kyrie Flytrap IV',
-         price: 189,
-         size: 'XL',
-         img_url: '/img/kyrie-flytrap.jpg',
-         category: 'Мужские Кроссовки',
-      },
-   ];
-
-   const categories_mock = [
-      'Мужские Кроссовки',
-      'Верхняя одежда',
-      'Головной убор',
-      'Костюмы',
-      'Рубашки',
-   ];
-
-   // Получение данных из сервера
+   const user = JSON.parse(localStorage.getItem('user'))
 
    const [products, setProducts] = useState([]);
    const [cartProducts, setCartProducts] = useState([]);
@@ -125,8 +14,8 @@ function Items() {
    useEffect(() => {
       const fetchData = async () => {
          try {
-            // поменяй на верный эндпоинт (localhost:8080 писать здесь не надо, пиши сразу то что пишешь после порта)
-            const response = await axiosInstance.get('/api/v1/products'); // <------ HERE
+
+            const response = await axiosInstance.get('/api/product');
             setProducts(response.data);
 
             const uniqueCategories = Array.from(
@@ -134,7 +23,7 @@ function Items() {
             );
             setCategories(uniqueCategories);
 
-            const cartResponse = await axiosInstance.get('get-cart-items/id');
+            const cartResponse = await axiosInstance.get(`/api/cart/user/${user.userId}`);
             setCartProducts(cartResponse.data);
          } catch (error) {
             // alert('Error while fetching data, check console!');
@@ -217,12 +106,15 @@ function Items() {
                filteredItems.map((item, index) => {
                   return (
                      <Item
-                        // replace item.title with item.name or change name to title in java
-                        title={item.title}
+                        title={item.name}
                         price={item.price}
-                        img_url={item.img_url}
-                        key={index}
-                        isInCart={cartItems.includes(item)}
+                        description={item.description}
+                        category={item.category.name}
+                        img_url={item.imageUrl}
+                        color={item.color}
+                        key={item.id}
+                        id={item.id}
+                        isInCart={cartProducts.product.includes(item)}
                      />
                   );
                })

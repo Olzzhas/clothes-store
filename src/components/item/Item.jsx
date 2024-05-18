@@ -2,21 +2,22 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../interceptor';
 
-function Item({ title, price, img_url, isInCart }) {
+function Item({ id,title, price, img_url, isInCart }) {
    const navigate = useNavigate();
    const [isFav, setIsFav] = useState(isInCart);
 
+   const user = JSON.parse(localStorage.getItem('user'))
+
    const addToCart = async () => {
       if (!isFav) {
-         await axiosInstance.post('add-to-cart', {
-            product_id: 5,
-            user_id: 16,
+         await axiosInstance.post('/api/cart', {
+            userId: user.userId,
+            product: {
+               id:id
+            }
          });
       } else {
-         await axiosInstance.delete('delete-from-cart', {
-            product_id: 5,
-            user_id: 16,
-         });
+         await axiosInstance.delete(`/api/cart/user/${user.userId}/product/${id}`);
       }
    };
 
